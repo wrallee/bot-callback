@@ -2,7 +2,7 @@ const {GoogleGenerativeAI} = require("@google/generative-ai");
 const express = require('express');
 const dotenv = require('dotenv');
 const axios = require('axios');
-const {verifyRequestSignature, getWorksApiAccessToken} = require("./jwt-utils");
+const {verifyRequestSignature, getWorksApiAccessToken} = require("./crypto-utils");
 
 dotenv.config();
 
@@ -19,17 +19,13 @@ app.use(express.json());
 app.use(verifyRequestSignature)
 app.post('/api/chat', async (req, res) => {
     const prompt = req.body.content.text;
-    const channelId = req.body.source.channelId;
-    console.log('>>>>> logging ' + channelId)
-    console.log(req.body)
-    console.log('>>>>> logging ' + channelId)
+    const botApiUrl = getBotApiUrl(req, res);
 
     // get ai reply
     const result = await model.generateContent(prompt);
     const aiMessage = await result.response;
 
     // send chat to user-channel
-    const botApiUrl = `https://www.worksapis.com/v1.0/bots/${BOT_ID}/channels/${channelId}/messages`
     const authToken = await getWorksApiAccessToken(req, res);
     const botMessage = {
         content: {
@@ -56,3 +52,19 @@ app.post('/api/chat', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+function getBotApiUrl(req, res) {
+    const { channelId, userId } = req.body.source;
+    try {
+        if (channelId) {
+            return `https://www.worksapis.com/v1.0/bots/${BOT_ID}/channels/${channelId}/messages`;
+        } else if (userId) {
+            return `https://www.worksapis.com/v1.0/bots/${BOT_ID}/users/${userId}/messages`;
+        } else {
+            res.status(400).send('Both channelId and userId are missing');
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}

@@ -12,4 +12,4 @@
 | SERVICE_ACCOUNT       | Developer Console - ClientApp | [Service Account]     |
 
 **중요1: 인스턴스 실행 환경에 위 환경 변수들을 세팅해야 한다.**  
-**중요2: 프로젝트 루트에 개인 키 파일 세팅 필요!(Developer Console - ClientApp [Private Key])**
+**중요2: 프로젝트 루트에 개인 키 파일(private.key) 세팅 필요!(Developer Console - ClientApp [Private Key])**
