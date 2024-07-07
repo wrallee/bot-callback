@@ -20,6 +20,9 @@ app.use(verifyRequestSignature)
 app.post('/api/chat', async (req, res) => {
     const prompt = req.body.content.text;
     const channelId = req.body.source.channelId;
+    console.log('>>>>> logging ' + channelId)
+    console.log(req.body)
+    console.log('>>>>> logging ' + channelId)
 
     // get ai reply
     const result = await model.generateContent(prompt);
