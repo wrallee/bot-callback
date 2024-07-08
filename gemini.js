@@ -13,7 +13,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const genAI = new GoogleGenerativeAI(GENERATIVE_AI_API_KEY);
-const model = genAI.getGenerativeModel({model: "gemini-1.5-flash"});
+const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    generationConfig: {maxOutputTokens: 400}
+});
 
 app.use(express.json());
 app.use(verifyRequestSignature)
@@ -54,7 +57,7 @@ app.listen(port, () => {
 });
 
 function getBotApiUrl(req, res) {
-    const { channelId, userId } = req.body.source;
+    const {channelId, userId} = req.body.source;
     try {
         if (channelId) {
             return `https://www.worksapis.com/v1.0/bots/${BOT_ID}/channels/${channelId}/messages`;
