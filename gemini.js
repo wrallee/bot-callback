@@ -29,7 +29,7 @@ app.post('/api/chat', async (req, res) => {
     const aiMessage = await result.response;
 
     // send chat to user-channel
-    const authToken = await getWorksApiAccessToken(req, res);
+    const authToken = await getWorksApiAccessToken(req, res); // TODO 재 활용 하도록 구현해야 한다.
     const botMessage = {
         content: {
             type: 'text',
